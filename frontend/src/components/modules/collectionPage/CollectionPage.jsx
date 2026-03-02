@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import ProductCard from "../../shared/Cards/ProductCard"
 import { useParams, Link } from "react-router-dom"
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const CollectionPage = () => {
     const { category } = useParams();
     const [products, setProducts] = useState([]);
@@ -9,7 +11,7 @@ const CollectionPage = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch('http://localhost:5000/api/products')
+        fetch(`${API_URL}/api/products`)
             .then(res => res.json())
             .then(data => {
                 setProducts(data);

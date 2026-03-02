@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import ProductCard from "../../shared/Cards/ProductCard"
 import Pagination from "../../shared/Pagination/Pagination"
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const product = () => {
     const [allProducts, setAllProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -9,7 +11,7 @@ const product = () => {
     const itemsPerPage = 25;
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/products')
+        fetch(`${API_URL}/api/products`)
             .then(res => res.json())
             .then(data => {
                 setAllProducts(data);

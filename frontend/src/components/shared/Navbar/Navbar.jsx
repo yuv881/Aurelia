@@ -3,6 +3,8 @@ import { Search, ShoppingCart, User, Heart, Menu } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cart from '../Cart/Cart';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Navbar = () => {
     const navigate = useNavigate();
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -17,7 +19,7 @@ const Navbar = () => {
     const [productsData, setProductsData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/products')
+        fetch(`${API_URL}/api/products`)
             .then(res => res.json())
             .then(data => setProductsData(data))
             .catch(err => console.error("Error fetching products:", err));

@@ -18,6 +18,8 @@ const defaultAddresses = [
     }
 ];
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Account = () => {
     const [activeTab, setActiveTab] = useState('profile');
 
@@ -74,7 +76,7 @@ const Account = () => {
         const token = localStorage.getItem('token');
         if (!token) return;
         setAddressLoading(true);
-        fetch('http://localhost:5000/api/addresses', {
+        fetch(`${API_URL}/api/addresses`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => res.json())
@@ -88,7 +90,7 @@ const Account = () => {
         const token = localStorage.getItem('token');
         if (!token) return;
         setOrdersLoading(true);
-        fetch('http://localhost:5000/api/orders', {
+        fetch(`${API_URL}/api/orders`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => res.json())
@@ -100,7 +102,7 @@ const Account = () => {
     const handleCancelOrder = async (orderId) => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+            const res = await fetch(`${API_URL}/api/orders/${orderId}/cancel`, {
                 method: 'PATCH',
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -143,7 +145,7 @@ const Account = () => {
         }
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch('http://localhost:5000/api/addresses', {
+            const res = await fetch(`${API_URL}/api/addresses`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify(newAddressForm)
@@ -162,7 +164,7 @@ const Account = () => {
     const handleDeleteAddress = async (id) => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`http://localhost:5000/api/addresses/${id}`, {
+            const res = await fetch(`${API_URL}/api/addresses/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -183,7 +185,7 @@ const Account = () => {
     const handleSetDefault = async (id) => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`http://localhost:5000/api/addresses/${id}/default`, {
+            const res = await fetch(`${API_URL}/api/addresses/${id}/default`, {
                 method: 'PATCH',
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -216,7 +218,7 @@ const Account = () => {
     const handleUpdateAddress = async (id) => {
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`http://localhost:5000/api/addresses/${id}`, {
+            const res = await fetch(`${API_URL}/api/addresses/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify(editForm)

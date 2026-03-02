@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, Heart, ArrowLeft, Plus, Minus } from 'lucide-react';
 import Button from '../../shared/Buttons/ATC_Button';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const ProductPage = () => {
     const { productName } = useParams();
     const navigate = useNavigate();
@@ -16,7 +18,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch('http://localhost:5000/api/products')
+        fetch(`${API_URL}/api/products`)
             .then(res => res.json())
             .then(data => {
                 const foundProduct = data.find(p => p.name.toLowerCase() === decodeURIComponent(productName).toLowerCase());

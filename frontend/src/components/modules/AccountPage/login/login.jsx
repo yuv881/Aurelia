@@ -4,6 +4,8 @@ import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +23,7 @@ const Login = () => {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -40,7 +42,7 @@ const Login = () => {
 
     const onGoogleCredential = async (googleResponse) => {
         try {
-            const res = await fetch('http://localhost:5000/api/auth/google/verify', {
+            const res = await fetch(`${API_URL}/api/auth/google/verify`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ credential: googleResponse.credential }),

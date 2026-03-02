@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 /* ── helpers ──────────────────────────────────────────────── */
-const API = 'http://localhost:5000/api';
+const API = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api';
 const token = () => localStorage.getItem('token');
 const fmt = (n) => Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
 
