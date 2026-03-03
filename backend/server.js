@@ -15,6 +15,8 @@ app.use(cors({
     origin: [
         process.env.FRONTEND_URL,
         process.env.ADMIN_URL,
+        "https://aurelia-frontend-c31y.onrender.com",
+        "https://aurelia-admin.onrender.com",
         "http://localhost:5173",
         "http://localhost:5174"
     ].filter(Boolean),
