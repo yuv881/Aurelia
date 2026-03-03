@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, X, Check, Search, Package, Loader2, AlertTriangle
 
 const EMPTY = { name: '', category: '', price: '', stock: '', rating: '', brand: '', image: '', description: '' };
 const CATEGORIES = ['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Books', 'Toys', 'Food', 'Other'];
+const fmt = (n) => Number(n || 0).toLocaleString('en-IN');
 
 const StockBadge = ({ stock }) => {
     const n = Number(stock);
