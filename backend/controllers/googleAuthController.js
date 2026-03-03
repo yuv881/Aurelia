@@ -6,22 +6,13 @@ import {
     getUserByEmailForGoogle,
 } from "../queries/googleAuthQueries.js";
 
-// ─── Helper ──────────────────────────────────────────────────────────────────
 
 const generateToken = (id) =>
     jwt.sign({ id }, process.env.JWT_SECRET || "fallback_secret_key", {
         expiresIn: "30d",
     });
 
-// ─── Google OAuth Callback ────────────────────────────────────────────────────
 
-/**
- * Called after Google redirects back to /api/auth/google/callback.
- * Expects the decoded Google profile in req.googleUser (set by middleware).
- *
- * Google profile shape:
- *   { sub, name, email, picture }
- */
 export const googleAuthCallback = async (req, res) => {
     try {
         const { sub: googleId, name, email, picture: avatar } = req.googleUser;
@@ -62,12 +53,7 @@ export const googleAuthCallback = async (req, res) => {
     }
 };
 
-// ─── Verify Google ID Token (used by frontend "Sign in with Google" button) ──
 
-/**
- * POST /api/auth/google/verify
- * Body: { credential }  — the raw ID token from Google's JS SDK / One Tap
- */
 export const verifyGoogleToken = async (req, res) => {
     try {
         const { credential } = req.body;
