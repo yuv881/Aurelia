@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = "231798839885-edj4irn353e7c1colhrdgq5ke6idu125.apps.googleusercontent.com";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 

@@ -57,8 +57,16 @@ export const googleAuthCallback = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("Google auth error:", error);
-        res.status(500).json({ message: "Server error during Google authentication" });
+        console.error("Google auth callback error detail:", {
+            message: error.message,
+            stack: error.stack,
+            reqBody: req.body,
+            googleUser: req.googleUser
+        });
+        res.status(500).json({
+            message: "Server error during Google authentication",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 };
 
@@ -79,6 +87,11 @@ export const verifyGoogleToken = async (req, res) => {
         // Decode the JWT issued by Google (header.payload.signature)
         // We verify the signature against Google's public keys.
         const { OAuth2Client } = await import("google-auth-library");
+        if (!process.env.GOOGLE_CLIENT_ID) {
+            console.error("GOOGLE_CLIENT_ID is not defined in environment variables");
+            return res.status(500).json({ message: "Google OAuth is not configured on the server" });
+        }
+
         const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
         const ticket = await client.verifyIdToken({
@@ -101,9 +114,12 @@ export const verifyGoogleToken = async (req, res) => {
             picture: payload.picture,
         };
 
-        return googleAuthCallback(req, res);
+        return await googleAuthCallback(req, res);
     } catch (error) {
-        console.error("Google token verification error:", error);
-        res.status(401).json({ message: "Invalid Google token" });
+        console.error("Google token verification error detail:", {
+            message: error.message,
+            stack: error.stack
+        });
+        res.status(401).json({ message: "Invalid Google token", error: error.message });
     }
 };

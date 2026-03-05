@@ -71,6 +71,15 @@ async function migrate() {
         await sql`CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items (order_id)`;
         console.log('  ✅ order_items ready.');
 
+        // ── Google OAuth Fields ──────────────────────────────────────
+        console.log('→ Adding Google OAuth fields to users table if missing...');
+        await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id TEXT UNIQUE`;
+        await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar TEXT`;
+        await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS auth_provider TEXT NOT NULL DEFAULT 'local'`;
+        await sql`ALTER TABLE users ALTER COLUMN password DROP NOT NULL`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_users_google_id ON users (google_id)`;
+        console.log('  ✅ Google OAuth fields ready.');
+
         console.log('\n🎉 All migrations complete!');
     } catch (err) {
         console.error('❌ Migration failed:', err.message);
