@@ -17,25 +17,33 @@ export const googleAuthCallback = async (req, res) => {
     try {
         const { sub: googleId, name, email, picture: avatar } = req.googleUser;
 
-        
+        if (!googleId || !email) {
+            console.error("Missing required Google user info:", req.googleUser);
+            return res.status(400).json({ message: "Invalid Google user data received" });
+        }
+
+        // Search for user by Google ID
         let user = await getUserByGoogleId(googleId);
 
         if (!user) {
-            
+            // Check if user exists with the same email
             const existingUser = await getUserByEmailForGoogle(email);
 
             if (existingUser) {
-         
-                user = await linkGoogleAccount(email, googleId, avatar);
+                // Link account
+                user = await linkGoogleAccount(email, googleId, avatar || null);
             } else {
-         
-                user = await createGoogleUser(googleId, name, email, avatar);
+                // Create new user
+                user = await createGoogleUser(googleId, name || "Google User", email, avatar || null);
             }
+        }
+
+        if (!user) {
+            throw new Error("Failed to retrieve or create user after authentication");
         }
 
         const token = generateToken(user.id);
 
-     
         res.status(200).json({
             message: "Google login successful",
             token,
@@ -56,7 +64,7 @@ export const googleAuthCallback = async (req, res) => {
         });
         res.status(500).json({
             message: "Server error during Google authentication",
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            error: process.env.NODE_ENV === 'development' ? error.message : error.message // Showing error message temporarily to help user debug
         });
     }
 };
