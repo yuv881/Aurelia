@@ -13,7 +13,6 @@ const app = express();
 app.set("trust proxy", true);
 
 const PORT = process.env.PORT || 5000;
-
 app.use(cors({
     origin: [
         "https://aurelia-frontend-c31y.onrender.com",
@@ -24,6 +23,8 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.use(express.json());
 
 // 👇 important for CORS preflight
 app.options("*", cors());
