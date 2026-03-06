@@ -61,29 +61,35 @@ const Login = () => {
     const handleGoogleSignIn = () => {
         setError(null);
         setGoogleLoading(true);
-        const init = () => {
-            window.google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: onGoogleCredential,
-            });
-            window.google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    setGoogleLoading(false);
-                    setError('Google sign-in was dismissed. Please try again.');
-                }
-            });
-        };
-        if (window.google?.accounts?.id) { init(); return; }
-        const existing = document.querySelector('script[src*="gsi/client"]');
-        if (existing) { existing.addEventListener('load', init); return; }
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        script.onload = init;
-        script.onerror = () => { setError('Failed to load Google Sign-In.'); setGoogleLoading(false); };
-        document.head.appendChild(script);
+
+        const REDIRECT_URI = `${window.location.origin}/login`;
+        const SCOPE = 'openid email profile';
+        const NONCE = Math.random().toString(36).substring(2);
+
+        // Use ID Token (implicit flow) which the backend expects (verifyIdToken)
+        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+            `client_id=${GOOGLE_CLIENT_ID}&` +
+            `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+            `response_type=id_token&` +
+            `scope=${encodeURIComponent(SCOPE)}&` +
+            `nonce=${NONCE}`;
+
+        window.location.href = googleAuthUrl;
     };
+
+    // Handle the redirect callback from Google
+    React.useEffect(() => {
+        const hash = window.location.hash;
+        if (hash) {
+            const params = new URLSearchParams(hash.substring(1));
+            const idToken = params.get('id_token');
+            if (idToken) {
+                onGoogleCredential({ credential: idToken });
+                // Clean up the URL hash but keep the path
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+        }
+    }, []);
 
     return (
         <div style={styles.page}>
