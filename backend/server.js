@@ -9,6 +9,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 const app = express();
+app.set("trust proxy", true);
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({

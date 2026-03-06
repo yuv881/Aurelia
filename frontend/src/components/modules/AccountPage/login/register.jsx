@@ -13,6 +13,7 @@ const Register = () => {
     const [error, setError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
 
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setError(null);
@@ -62,34 +63,48 @@ const Register = () => {
         setError(null);
         setGoogleLoading(true);
 
-        const REDIRECT_URI = `${window.location.origin}/register`;
-        const SCOPE = 'openid email profile';
-        const NONCE = Math.random().toString(36).substring(2);
-
-        // Use ID Token (implicit flow) which the backend expects (verifyIdToken)
-        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-            `client_id=${GOOGLE_CLIENT_ID}&` +
-            `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
-            `response_type=id_token&` +
-            `scope=${encodeURIComponent(SCOPE)}&` +
-            `nonce=${NONCE}`;
-
-        window.location.href = googleAuthUrl;
-    };
-
-    // Handle the redirect callback from Google
-    React.useEffect(() => {
-        const hash = window.location.hash;
-        if (hash) {
-            const params = new URLSearchParams(hash.substring(1));
-            const idToken = params.get('id_token');
-            if (idToken) {
-                onGoogleCredential({ credential: idToken });
-                // Clean up the URL hash but keep the path
-                window.history.replaceState(null, null, window.location.pathname);
+        const initGIS = () => {
+            if (!window.google?.accounts?.id) {
+                setError('Google script failed to load properly.');
+                setGoogleLoading(false);
+                return;
             }
+
+            window.google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: onGoogleCredential,
+                auto_select: false,
+                cancel_on_tap_outside: true
+            });
+
+            window.google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed()) {
+                    console.log('Prompt not displayed:', notification.getNotDisplayedReason());
+                    setError('Unable to display Google Sign-Up at this time.');
+                    setGoogleLoading(false);
+                } else if (notification.isSkippedMoment()) {
+                    setGoogleLoading(false);
+                } else if (notification.isDismissedMoment()) {
+                    setGoogleLoading(false);
+                }
+            });
+        };
+
+        if (!window.google?.accounts?.id) {
+            const script = document.createElement('script');
+            script.src = 'https://accounts.google.com/gsi/client';
+            script.async = true;
+            script.defer = true;
+            script.onload = initGIS;
+            script.onerror = () => {
+                setError('Failed to load Google Sign-In sdk.');
+                setGoogleLoading(false);
+            };
+            document.head.appendChild(script);
+        } else {
+            initGIS();
         }
-    }, []);
+    };
 
     return (
         <div style={styles.page}>
