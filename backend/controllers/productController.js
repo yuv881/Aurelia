@@ -7,7 +7,11 @@ export const getAllProductsController = async (req, res) => {
         res.status(200).json(products);
     } catch (error) {
         console.error("Error fetching products:", error);
-        res.status(500).json({ error: "Server error during products fetch" });
+        res.status(500).json({ 
+            error: "Server error during products fetch",
+            message: error.message,
+            code: error.code
+        });
     }
 };
 
@@ -22,7 +26,11 @@ export const getProductByIdController = async (req, res) => {
         res.status(200).json(product);
     } catch (error) {
         console.error("Error fetching product:", error);
-        res.status(500).json({ error: "Server error during product fetch" });
+        res.status(500).json({ 
+            error: "Server error during product fetch",
+            message: error.message,
+            code: error.code
+        });
     }
 };
 
@@ -34,7 +42,11 @@ export const getProductsByCategoryController = async (req, res) => {
         res.status(200).json(products);
     } catch (error) {
         console.error("Error fetching products by category:", error);
-        res.status(500).json({ error: "Server error during category products fetch" });
+        res.status(500).json({ 
+            error: "Server error during category products fetch",
+            message: error.message,
+            code: error.code
+        });
     }
 };
 
@@ -52,6 +64,10 @@ export const createProductController = async (req, res) => {
         res.status(201).json(product);
     } catch (error) {
         console.error("Error creating product:", error);
-        res.status(500).json({ error: "Server error during product creation" });
+        res.status(500).json({ 
+            error: "Server error during product creation",
+            message: error.message,
+            code: error.code
+        });
     }
 };
